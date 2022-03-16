@@ -1,10 +1,6 @@
 import datetime
 
 
-def clamp(num, min_value, max_value):
-    return max(min(num, max_value), min_value)
-
-
 class Aquarium:
     first_time = datetime.timedelta(hours=0)
     second_time = datetime.timedelta(hours=0)

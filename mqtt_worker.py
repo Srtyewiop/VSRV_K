@@ -1,7 +1,6 @@
 import paho.mqtt.client as mqtt
 import xlwt
 import xlrd
-from typing import List
 
 style0 = xlwt.easyxf(num_format_str='#,##0.00')
 client = mqtt.Client()
@@ -17,7 +16,6 @@ def init_lists():
     aq_lists.add_sheet('Errors')
 
 
-
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!")
@@ -29,6 +27,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
     m_s_type = f"{msg.topic}".split('/')[1]
+    # Если сообщение о танке
     if m_s_type.split('_')[0] == "tank":
         s_index = int(m_s_type.split('_')[1])
         l_b = aq_lists.get_sheet(f"Aquarium_{s_index} Info")
@@ -36,6 +35,7 @@ def on_message(client, userdata, msg):
         l_b.write(len(l_b.__getattribute__('_Worksheet__rows')), 0, s_inf[0])
         l_b.write(len(l_b.__getattribute__('_Worksheet__rows'))-1, 1, s_inf[1])
         aq_lists.save(f"Aquariums_Info_Sim.xls")
+    # Если сообщение об ошибке
     elif m_s_type.split('_')[0] == "error":
         s_index = int(m_s_type.split('_')[1])
         l_b = aq_lists.get_sheet("Errors")
